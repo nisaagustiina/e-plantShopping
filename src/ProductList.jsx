@@ -1,49 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
+import { useSelector, useDispatch } from 'react-redux';
+import { addItem, removeItem, updateQuantity } from './CartSlice'
+
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+    const [addedToCart, setAddedToCart] = useState(false);
+    const dispatch = useDispatch();
+
+    const cartItems = useSelector(state => state.cart.items);
+
+    const cartCount = cartItems.reduce(
+        (total, item) => total + (item.quantity ?? 1),
+        0
+    );
+
+    const handleAddToCart = (product) => {
+        dispatch(addItem(product));
+
+        setAddedToCart((prevState) => ({
+            ...prevState,
+            [product.name]: true
+        }))
+    }
 
     const plantsArray = [
         {
-            category: "Air Purifying Plants",
+            category: "Medicinal Plants",
             plants: [
-                {
-                    name: "Snake Plant",
-                    image: "https://cdn.pixabay.com/photo/2021/01/22/06/04/snake-plant-5939187_1280.jpg",
-                    description: "Produces oxygen at night, improving air quality.",
-                    cost: "$15"
-                },
-                {
-                    name: "Spider Plant",
-                    image: "https://cdn.pixabay.com/photo/2018/07/11/06/47/chlorophytum-3530413_1280.jpg",
-                    description: "Filters formaldehyde and xylene from the air.",
-                    cost: "$12"
-                },
-                {
-                    name: "Peace Lily",
-                    image: "https://cdn.pixabay.com/photo/2019/06/12/14/14/peace-lilies-4269365_1280.jpg",
-                    description: "Removes mold spores and purifies the air.",
-                    cost: "$18"
-                },
-                {
-                    name: "Boston Fern",
-                    image: "https://cdn.pixabay.com/photo/2020/04/30/19/52/boston-fern-5114414_1280.jpg",
-                    description: "Adds humidity to the air and removes toxins.",
-                    cost: "$20"
-                },
-                {
-                    name: "Rubber Plant",
-                    image: "https://cdn.pixabay.com/photo/2020/02/15/11/49/flower-4850729_1280.jpg",
-                    description: "Easy to care for and effective at removing toxins.",
-                    cost: "$17"
-                },
                 {
                     name: "Aloe Vera",
                     image: "https://cdn.pixabay.com/photo/2018/04/02/07/42/leaf-3283175_1280.jpg",
-                    description: "Purifies the air and has healing properties for skin.",
+                    description: "Soothing gel used for skin ailments.",
                     cost: "$14"
+                },
+                {
+                    name: "Echinacea",
+                    image: "https://cdn.pixabay.com/photo/2014/12/05/03/53/echinacea-557477_1280.jpg",
+                    description: "Boosts immune system, helps fight colds.",
+                    cost: "$16"
+                },
+                {
+                    name: "Peppermint",
+                    image: "https://cdn.pixabay.com/photo/2017/07/12/12/23/peppermint-2496773_1280.jpg",
+                    description: "Relieves digestive issues and headaches.",
+                    cost: "$13"
+                },
+                {
+                    name: "Lemon Balm",
+                    image: "https://cdn.pixabay.com/photo/2019/09/16/07/41/balm-4480134_1280.jpg",
+                    description: "Calms nerves and promotes relaxation.",
+                    cost: "$14"
+                },
+                {
+                    name: "Chamomile",
+                    image: "https://cdn.pixabay.com/photo/2016/08/19/19/48/flowers-1606041_1280.jpg",
+                    description: "Soothes anxiety and promotes sleep.",
+                    cost: "$15"
+                },
+                {
+                    name: "Calendula",
+                    image: "https://cdn.pixabay.com/photo/2019/07/15/18/28/flowers-4340127_1280.jpg",
+                    description: "Heals wounds and soothes skin irritations.",
+                    cost: "$12"
                 }
             ]
         },
@@ -89,6 +110,47 @@ function ProductList({ onHomeClick }) {
             ]
         },
         {
+            category: "Air Purifying Plants",
+            plants: [
+                {
+                    name: "Snake Plant",
+                    image: "https://cdn.pixabay.com/photo/2021/01/22/06/04/snake-plant-5939187_1280.jpg",
+                    description: "Produces oxygen at night, improving air quality.",
+                    cost: "$15"
+                },
+                {
+                    name: "Spider Plant",
+                    image: "https://cdn.pixabay.com/photo/2018/07/11/06/47/chlorophytum-3530413_1280.jpg",
+                    description: "Filters formaldehyde and xylene from the air.",
+                    cost: "$12"
+                },
+                {
+                    name: "Peace Lily",
+                    image: "https://cdn.pixabay.com/photo/2019/06/12/14/14/peace-lilies-4269365_1280.jpg",
+                    description: "Removes mold spores and purifies the air.",
+                    cost: "$18"
+                },
+                {
+                    name: "Boston Fern",
+                    image: "https://cdn.pixabay.com/photo/2020/04/30/19/52/boston-fern-5114414_1280.jpg",
+                    description: "Adds humidity to the air and removes toxins.",
+                    cost: "$20"
+                },
+                {
+                    name: "Rubber Plant",
+                    image: "https://cdn.pixabay.com/photo/2020/02/15/11/49/flower-4850729_1280.jpg",
+                    description: "Easy to care for and effective at removing toxins.",
+                    cost: "$17"
+                },
+                {
+                    name: "Aloe Vera",
+                    image: "https://cdn.pixabay.com/photo/2018/04/02/07/42/leaf-3283175_1280.jpg",
+                    description: "Purifies the air and has healing properties for skin.",
+                    cost: "$14"
+                }
+            ]
+        },
+        {
             category: "Insect Repellent Plants",
             plants: [
                 {
@@ -126,47 +188,6 @@ function ProductList({ onHomeClick }) {
                     image: "https://cdn.pixabay.com/photo/2015/07/02/21/55/cat-829681_1280.jpg",
                     description: "Repels mosquitoes and attracts cats.",
                     cost: "$13"
-                }
-            ]
-        },
-        {
-            category: "Medicinal Plants",
-            plants: [
-                {
-                    name: "Aloe Vera",
-                    image: "https://cdn.pixabay.com/photo/2018/04/02/07/42/leaf-3283175_1280.jpg",
-                    description: "Soothing gel used for skin ailments.",
-                    cost: "$14"
-                },
-                {
-                    name: "Echinacea",
-                    image: "https://cdn.pixabay.com/photo/2014/12/05/03/53/echinacea-557477_1280.jpg",
-                    description: "Boosts immune system, helps fight colds.",
-                    cost: "$16"
-                },
-                {
-                    name: "Peppermint",
-                    image: "https://cdn.pixabay.com/photo/2017/07/12/12/23/peppermint-2496773_1280.jpg",
-                    description: "Relieves digestive issues and headaches.",
-                    cost: "$13"
-                },
-                {
-                    name: "Lemon Balm",
-                    image: "https://cdn.pixabay.com/photo/2019/09/16/07/41/balm-4480134_1280.jpg",
-                    description: "Calms nerves and promotes relaxation.",
-                    cost: "$14"
-                },
-                {
-                    name: "Chamomile",
-                    image: "https://cdn.pixabay.com/photo/2016/08/19/19/48/flowers-1606041_1280.jpg",
-                    description: "Soothes anxiety and promotes sleep.",
-                    cost: "$15"
-                },
-                {
-                    name: "Calendula",
-                    image: "https://cdn.pixabay.com/photo/2019/07/15/18/28/flowers-4340127_1280.jpg",
-                    description: "Heals wounds and soothes skin irritations.",
-                    cost: "$12"
                 }
             ]
         },
@@ -252,6 +273,7 @@ function ProductList({ onHomeClick }) {
         e.preventDefault();
         setShowCart(false);
     };
+
     return (
         <div>
             <div className="navbar" style={styleObj}>
@@ -269,13 +291,44 @@ function ProductList({ onHomeClick }) {
                 </div>
                 <div style={styleObjUl}>
                     <div> <a href="#" onClick={(e) => handlePlantsClick(e)} style={styleA}>Plants</a></div>
-                    <div> <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}><h1 className='cart'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor" height="68" width="68"><rect width="156" height="156" fill="none"></rect><circle cx="80" cy="216" r="12"></circle><circle cx="184" cy="216" r="12"></circle><path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" id="mainIconPathAttribute"></path></svg></h1></a></div>
+
+                    <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
+                        <div className="cart">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor" height="68" width="68"><rect width="156" height="156" fill="none"></rect><circle cx="80" cy="216" r="12"></circle><circle cx="184" cy="216" r="12"></circle><path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" id="mainIconPathAttribute"></path></svg>
+                            {cartCount > 0 && (
+                                <span className="cart_quantity_count">{cartCount}</span>
+                            )}
+                        </div>
+                    </a>
                 </div>
             </div>
             {!showCart ? (
                 <div className="product-grid">
+                    {plantsArray.map((category, index) => (
+                        <>
+                            <div key={index} className='plantname_heading'>
+                                <h1>
+                                    <div className='plant_heading'>{category.category}</div>
+                                </h1>
+                            </div>
 
-
+                            <div className='product-list'>
+                                {category.plants.map((plant, plantIndex) => (
+                                    <div className='product-card' key={plantIndex}>
+                                        <div className='product-title'>{plant.name}</div>
+                                        <img className='product-image' src={plant.image} alt={plant.name} />
+                                        <div className='product-price'>{plant.cost}</div>
+                                        <div className='product-description'>{plant.description}</div>
+                                        <button className='product-button'
+                                            onClick={() => handleAddToCart(plant)}
+                                            disabled={cartItems.some(item => item.name === plant.name)} >
+                                            Add to Cart
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    ))}
                 </div>
             ) : (
                 <CartItem onContinueShopping={handleContinueShopping} />
